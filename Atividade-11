@@ -1,0 +1,211 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package exercicios_java_sala;
+
+import biblioteca_class_exercicios.EnumDate;
+import biblioteca_class_exercicios.Data;
+/**
+ *
+ * @author ACER
+ */
+
+/*
+31º Crie uma classe "Data" com os atributos "dia", "mes" e "ano". Escreva um método 
+que determine qual é o dia seguinte à data atual, considerando 
+que fevereiro pode ter 28 ou 29 dias (em anos bissextos).
+*/
+
+/// ARQUIVO - 1
+/// FUNCAO PRINCIPAL
+public class Exercicios_Java_Sala10 {
+    
+    public static void main(String[] args) {
+        
+        /// DADOS DA DATA
+        short day = 1;
+        EnumDate mes = EnumDate.JULY;
+        int anoBissexto = 5000;
+        int anoNo = 2023;
+        
+        /// INSTANCIA DO OBJETO DA CLASSE DATA
+        Data caledario = new Data(day, mes, anoBissexto);
+        
+        /// EXIBINDO O PROXIMO DIA
+        System.out.println("O proximo dia e: " + caledario.diaPosterio());
+        
+    }
+}
+
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package biblioteca_class_exercicios;
+
+/**
+ *
+ * @author ACER
+ */
+
+/// ARQUIVO - 2
+/// CLASSE DATA
+/// METODO DE MOSTRA QUE PROXIMO DIA A DATA ATUAL
+public class Data{
+    
+    /// ATRIBUTOS DA CLASSE
+    private short dia;
+    private EnumDate mes;
+    private int ano;
+    private int century;
+    
+    /// CONSTRUTOR
+    public Data(short dia, EnumDate mes, int ano){
+        
+        this.dia = dia;
+        this.mes = mes;
+        this.ano = ano;
+        this.century = 2000; /// SECULO ATUAL
+        
+        verificarSeculo(century);
+    }
+
+    /// GET
+    public short getDia() {
+        return dia;
+    }
+
+    public int getAno() {
+        return ano;
+    }
+
+    public EnumDate getMes() {
+        return mes;
+    }
+
+    public int getCentury() {
+        return century;
+    }
+    
+    /// METODOS ===================================================
+    
+    /// DETERMINAR O PROXIMO DIA (RETORNA ZERO SE ALGO DER ERRADO OU NAO PODE PROSSEGUIR)
+    public int diaPosterio(){
+        
+        /// O DIA NAO PODE SER NEGATIVO E NEM PASSAR DE 31 (DIA MAXIMO)
+        if(getDia() < 1 || getDia() > 31){
+            return 0;
+        }
+  
+        /// VAR PARA RECEBER 1 SE O ANO FOR BISSEXTO
+        int mesBissexto = 0;
+        
+        /// VERIFICAR SE O ANO E BISSEXTO
+        if(leapYear(getAno(), getCentury())){ 
+            mesBissexto++;
+        }
+        
+        /// FOR PARA PERCORRER MEU ENUM DE MESES
+        for(var listMes : EnumDate.values()){
+            
+            /// CASO FOR O MES DE FERVEREIRO, ENTAO UMA VERIFICACAO DIRETA E FEITA DIANTE DO ANO QUE PODE SER BISSEXTO OU NAO
+            if(getMes().equals(EnumDate.FEBRUARY)){
+                
+                /// O DIA DITO COM O DIA MAXIMO DO MES (SE FOR BISSEXTO ENTAO E +1)
+                if(getDia() == (getMes().getConstValue() + mesBissexto)){
+                    
+                    return 1;
+                }else if(getDia() < getMes().getConstValue()){
+                    
+                    return (getDia() + 1);
+                }
+                
+                return 0;
+            }
+            
+            /// FAZENDO A VERIFICACAO EM CADA MES (COM EXECAO DO MES DE FERVEREIRO)
+            if(getMes().equals(listMes)){
+                
+                if(getDia() == getMes().getConstValue()){
+                    
+                    return 1;
+                }else{
+                    
+                    return (getDia() + 1);
+                }
+            }
+        }
+        return 0;
+    }
+    
+    /// VERIFICAR O SECULO ATUAL PARA DEFINIR O PROXIMO SECULO (OPCIONAL)
+    private void verificarSeculo(int x_century){
+        if((ano - x_century) == (100 + 1)){
+            century += 100;
+        }
+    }
+    
+    /// DETERMINAR SE O ANO ATUAL E BISSEXTO OU NAO
+    private boolean leapYear(int currentYear, int century){
+         
+        /// QUANDO A DATA DO ANO TERMINAR EM 00
+        if((currentYear - century) == 100){
+            if(currentYear % 400 == 0){
+                return true;
+            }
+        }
+        
+        /// DIVISAO POR 4 O ANO (TENDO COMO RESPOSTA O RESTO DA DIVISAO)
+        if(currentYear % 4 == 0){ 
+           return true;
+        }
+         
+        return false;
+    }
+}
+
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
+ */
+package biblioteca_class_exercicios;
+
+/**
+ *
+ * @author ACER
+ */
+
+/// ARQUIVO - 3
+/// CLASSE ENUM PARA DEFINIR AS CONSTANTES DOS MESES
+/// DEFININDO TODOS OS 12 MESES COM SEU DIA MAXIMO
+public enum EnumDate {
+   
+    JANUARY(31),
+    FEBRUARY(28),
+    MARCH(31),
+    APRIL(30),
+    MAY(31),
+    JUNE(30),
+    JULY(31),
+    AUGUST(31),
+    SEPTEMBER(30), 
+    OCTOBER(31),
+    NOVEMBER(30),
+    DECEMBER(31);
+    
+    /// ATRIBUTOS
+    private int constValue;
+
+    /// CONSTRUTOR PRIVADO
+    EnumDate(int constValue) {
+        this.constValue = constValue;
+    }
+
+    /// GET PARA PEGAR O VALOR DA CONSTANTE
+    public int getConstValue() {
+        return constValue;
+    }   
+}
